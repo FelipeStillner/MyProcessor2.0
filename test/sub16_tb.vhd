@@ -8,15 +8,17 @@ architecture testbench of sub16_tb is
   component sub16
     port( 
         in0,in1 : in std_logic_vector(15 downto 0);
-        out0    : out std_logic_vector(15 downto 0)
+        out0    : out std_logic_vector(15 downto 0);
+        cout    : out std_logic
     );
   end component;
 
   signal  in0, in1 : std_logic_vector(15 downto 0);
   signal  out0     : std_logic_vector(15 downto 0);
+  signal  cout     : std_logic;
 
 begin
-  SUB160: sub16 port map (in0, in1, out0);
+  SUB160: sub16 port map (in0, in1, out0, cout);
 
   process
   begin

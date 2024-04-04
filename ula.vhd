@@ -6,7 +6,11 @@ entity ula is
         sel     : in std_logic_vector(3 downto 0);
         in0,in1 : in std_logic_vector(15 downto 0);
         out0    : out std_logic_vector(15 downto 0);
-        cout    : out std_logic
+        eq      : out std_logic;
+        gtr     : out std_logic;
+        gtru    : out std_logic;
+        cout_sum: out std_logic;
+        cout_sub: out std_logic
     );
 end entity;
 
@@ -16,6 +20,28 @@ architecture behaviour of ula is
         port( 
             in0,in1 : in std_logic_vector(15 downto 0);
             out0    : out std_logic_vector(15 downto 0)
+        );
+    end component;
+
+    component gtr16 is
+        port( 
+            in0,in1 : in std_logic_vector(15 downto 0);
+            cout    : out std_logic -- in0 > in1
+        );
+    end component;
+
+    component gtru16 is
+        port( 
+            cin     : in std_logic; -- in0 > in1
+            in0,in1 : in std_logic_vector(15 downto 0);
+            cout    : out std_logic -- in0 > in1
+        );
+    end component;
+
+    component eq16 is
+        port( 
+            in0,in1 : in std_logic_vector(15 downto 0);
+            cout    : out std_logic -- in0 == in1
         );
     end component;
 
@@ -37,6 +63,14 @@ architecture behaviour of ula is
         );
     end component;
 
+    component sub16
+        port( 
+            in0,in1 : in std_logic_vector(15 downto 0);
+            out0    : out std_logic_vector(15 downto 0);
+            cout    : out std_logic
+        );
+    end component;
+
     component sum16
         port( 
             cin     : in std_logic;
@@ -54,6 +88,7 @@ architecture behaviour of ula is
     end component;
 
     signal s_and16, s_or16 : std_logic_vector(15 downto 0);
+    signal s_xor16         : std_logic_vector(15 downto 0);
     signal s_sum16         : std_logic_vector(15 downto 0);
     signal n               : std_logic_vector(15 downto 0);
     signal t1, t2          : std_logic;
@@ -63,7 +98,11 @@ begin
     t1 <= '0';
     AND160 : and16 port map(in0, in1, s_and16);
     OR160  : or16 port map(in0, in1, s_or16);
-    XOR160 : xor16 port map(in0, in1, s_or16);
-    SUM160 : sum16 port map(t1, in0, in1, s_sum16, t2);
+    XOR160 : xor16 port map(in0, in1, s_xor16);
+    SUM160 : sum16 port map(t1, in0, in1, s_sum16, cout_sum);
+    SUMB60 : sub16 port map(in0, in1, s_sum16, cout_sub);
     MUX160 : mux16 port map(sel, s_and16, s_or16, s_sum16, n, n, n, n, n, n, n, n, n, n, n, n, n, out0);
+    EQ160 : eq16 port map(in0, in1, eq);
+    GTR160 : gtr16 port map(in0, in1, gtr);
+    GTRU160 : gtru16 port map(t1, in0, in1, gtru);
 end architecture;

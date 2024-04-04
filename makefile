@@ -4,8 +4,10 @@ compile:
 	@mkdir -p waves
 
 	ghdl -a -fsynopsys --std=08 mux.vhd
+	ghdl -a -fsynopsys --std=08 mux4.vhd 
 	ghdl -a -fsynopsys --std=08 mux16.vhd 
-	ghdl -a -fsynopsys --std=08 gtr.vhd 
+	ghdl -a -fsynopsys --std=08 gtru.vhd 
+	ghdl -a -fsynopsys --std=08 gtru16.vhd 
 	ghdl -a -fsynopsys --std=08 gtr16.vhd 
 	ghdl -a -fsynopsys --std=08 or16.vhd
 	ghdl -a -fsynopsys --std=08 and16.vhd
