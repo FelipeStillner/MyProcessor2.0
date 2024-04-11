@@ -12,19 +12,18 @@ architecture testbench of ula_tb is
           out0    : out std_logic_vector(15 downto 0);
           eq      : out std_logic;
           gtr     : out std_logic;
-          gtru    : out std_logic;
           cout_sum: out std_logic;
           cout_sub: out std_logic
       );
   end component;
 
-  signal  sel      : std_logic_vector(3 downto 0);
-  signal  in0, in1 : std_logic_vector(15 downto 0);
-  signal  out0     : std_logic_vector(15 downto 0);
-  signal  cout_sum, cout_sub, eq, gtr, gtru     : std_logic;
+  signal  sel                             : std_logic_vector(3 downto 0);
+  signal  in0, in1                        : std_logic_vector(15 downto 0);
+  signal  out0                            : std_logic_vector(15 downto 0);
+  signal  cout_sum, cout_sub, eq, gtr     : std_logic;
 
 begin
-  ULA0: ula port map (sel, in0, in1, out0, eq, gtr, gtru, cout_sum, cout_sub);
+  ULA0: ula port map (sel, in0, in1, out0, eq, gtr, cout_sum, cout_sub);
 
   process
   begin
