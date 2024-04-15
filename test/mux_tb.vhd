@@ -1,32 +1,32 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-entity mux_tb is
-end entity;
+ENTITY mux_tb IS
+END ENTITY;
 
-architecture testbench of mux_tb is
-  component mux
-    port( 
-      sel     : in std_logic;
-      in0,in1 : in std_logic_vector(15 downto 0);
-      out0    : out std_logic_vector(15 downto 0)
+ARCHITECTURE testbench OF mux_tb IS
+  COMPONENT mux
+    PORT (
+      sel : IN STD_LOGIC;
+      in0, in1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
-  end component;
+  END COMPONENT;
 
-  signal  sel      : std_logic;
-  signal  in0, in1 : std_logic_vector(15 downto 0);
-  signal  out0     : std_logic_vector(15 downto 0);
+  SIGNAL sel : STD_LOGIC;
+  SIGNAL in0, in1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL out0 : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
-begin
-  MUX0: mux port map (sel, in0, in1, out0);
+BEGIN
+  MUX0 : mux PORT MAP(sel, in0, in1, out0);
 
-  process
-  begin
+  PROCESS
+  BEGIN
     sel <= '0';
     in0 <= "0000000000000000";
     in1 <= "1111111111111111";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= '1';
-    wait for 5 ns;
-  end process;
-end;
+    WAIT FOR 5 ns;
+  END PROCESS;
+END;

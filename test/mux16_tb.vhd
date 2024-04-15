@@ -1,34 +1,34 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-entity mux16_tb is
-end entity;
+ENTITY mux16_tb IS
+END ENTITY;
 
-architecture testbench of mux16_tb is
-    
-    component mux16 is
-        port( 
-            sel                 : in std_logic_vector(3 downto 0);
-            in0,in1,in2,in3     : in std_logic_vector(15 downto 0);
-            in4,in5,in6,in7     : in std_logic_vector(15 downto 0);
-            in8,in9,inA,inB     : in std_logic_vector(15 downto 0);
-            inC,inD,inE,inF     : in std_logic_vector(15 downto 0);
-            out0                : out std_logic_vector(15 downto 0)
-        );
-    end component;
+ARCHITECTURE testbench OF mux16_tb IS
 
-  signal  sel             : std_logic_vector(3 downto 0);
-  signal  in0,in1,in2,in3 : std_logic_vector(15 downto 0);
-  signal  in4,in5,in6,in7 : std_logic_vector(15 downto 0);
-  signal  in8,in9,inA,inB : std_logic_vector(15 downto 0);
-  signal  inC,inD,inE,inF : std_logic_vector(15 downto 0);
-  signal  out0            : std_logic_vector(15 downto 0);
- 
-begin
-  MUX160: mux16 port map (sel, in0, in1, in2, in3, in4, in5, in6, in7, in8, in9, inA, inB, inC, inD, inE, inF, out0);
+  COMPONENT mux16 IS
+    PORT (
+      sel : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+      in0, in1, in2, in3 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      in4, in5, in6, in7 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      in8, in9, inA, inB : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      inC, inD, inE, inF : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+    );
+  END COMPONENT;
 
-  process
-  begin
+  SIGNAL sel : STD_LOGIC_VECTOR(3 DOWNTO 0);
+  SIGNAL in0, in1, in2, in3 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL in4, in5, in6, in7 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL in8, in9, inA, inB : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL inC, inD, inE, inF : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL out0 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+BEGIN
+  MUX160 : mux16 PORT MAP(sel, in0, in1, in2, in3, in4, in5, in6, in7, in8, in9, inA, inB, inC, inD, inE, inF, out0);
+
+  PROCESS
+  BEGIN
     sel <= "0000";
     in0 <= "0000000000001111";
     in1 <= "0000000000001110";
@@ -46,18 +46,18 @@ begin
     inD <= "0000000000000010";
     inE <= "0000000000000001";
     inF <= "0000000000000000";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= "0001";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= "0010";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= "0011";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= "0100";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= "0101";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     sel <= "1111";
-    wait for 5 ns;
-  end process;
-end;
+    WAIT FOR 5 ns;
+  END PROCESS;
+END;

@@ -1,59 +1,59 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-entity gtr_tb is
-end entity;
+ENTITY gtr_tb IS
+END ENTITY;
 
-architecture testbench of gtr_tb is
-  component gtr
-    port( 
-        cin     : in std_logic;
-        in0,in1 : in std_logic;
-        cout    : out std_logic
+ARCHITECTURE testbench OF gtr_tb IS
+  COMPONENT gtr
+    PORT (
+      cin : IN STD_LOGIC;
+      in0, in1 : IN STD_LOGIC;
+      cout : OUT STD_LOGIC
     );
-  end component;
+  END COMPONENT;
 
-  signal  cin      : std_logic;
-  signal  in0, in1 : std_logic;
-  signal  cout     : std_logic;
+  SIGNAL cin : STD_LOGIC;
+  SIGNAL in0, in1 : STD_LOGIC;
+  SIGNAL cout : STD_LOGIC;
 
-begin
-  GTR0: gtr port map (cin, in0, in1, cout);
+BEGIN
+  GTR0 : gtr PORT MAP(cin, in0, in1, cout);
 
-  process
-  begin
+  PROCESS
+  BEGIN
     cin <= '0';
     in0 <= '0';
     in1 <= '0';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '0';
     in0 <= '0';
     in1 <= '1';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '0';
     in0 <= '1';
     in1 <= '0';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '0';
     in0 <= '1';
     in1 <= '1';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '1';
     in0 <= '0';
     in1 <= '0';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '1';
     in0 <= '0';
     in1 <= '1';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '1';
     in0 <= '1';
     in1 <= '0';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     cin <= '1';
     in0 <= '1';
     in1 <= '1';
-    wait for 5 ns;
-    
-  end process;
-end;
+    WAIT FOR 5 ns;
+
+  END PROCESS;
+END;

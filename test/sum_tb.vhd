@@ -1,47 +1,47 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-entity sum_tb is
-end entity;
+ENTITY sum_tb IS
+END ENTITY;
 
-architecture testbench of sum_tb is
-    component sum is
-        port( 
-            cin     : in std_logic;
-            in0,in1 : in std_logic;
-            out0    : out std_logic;
-            cout    : out std_logic
-        );
-    end component;
+ARCHITECTURE testbench OF sum_tb IS
+  COMPONENT sum IS
+    PORT (
+      cin : IN STD_LOGIC;
+      in0, in1 : IN STD_LOGIC;
+      out0 : OUT STD_LOGIC;
+      cout : OUT STD_LOGIC
+    );
+  END COMPONENT;
 
-  signal  cin      : std_logic;
-  signal  in0, in1 : std_logic;
-  signal  out0     : std_logic;
-  signal  cout     : std_logic;
+  SIGNAL cin : STD_LOGIC;
+  SIGNAL in0, in1 : STD_LOGIC;
+  SIGNAL out0 : STD_LOGIC;
+  SIGNAL cout : STD_LOGIC;
 
-begin
-  SUM0: sum port map (cin, in0, in1, out0, cout);
+BEGIN
+  SUM0 : sum PORT MAP(cin, in0, in1, out0, cout);
 
-  process
-  begin
+  PROCESS
+  BEGIN
     cin <= '0';
     in0 <= '0';
     in1 <= '0';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
 
     cin <= '0';
     in0 <= '0';
     in1 <= '1';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
 
     cin <= '0';
     in0 <= '1';
     in1 <= '1';
-    wait for 5 ns;
+    WAIT FOR 5 ns;
 
     cin <= '1';
     in0 <= '1';
     in1 <= '1';
-    wait for 5 ns;
-  end process;
-end;
+    WAIT FOR 5 ns;
+  END PROCESS;
+END;

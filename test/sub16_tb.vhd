@@ -1,38 +1,38 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-entity sub16_tb is
-end entity;
+ENTITY sub16_tb IS
+END ENTITY;
 
-architecture testbench of sub16_tb is
-  component sub16
-    port( 
-        in0,in1 : in std_logic_vector(15 downto 0);
-        out0    : out std_logic_vector(15 downto 0);
-        cout    : out std_logic
+ARCHITECTURE testbench OF sub16_tb IS
+  COMPONENT sub16
+    PORT (
+      in0, in1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+      cout : OUT STD_LOGIC
     );
-  end component;
+  END COMPONENT;
 
-  signal  in0, in1 : std_logic_vector(15 downto 0);
-  signal  out0     : std_logic_vector(15 downto 0);
-  signal  cout     : std_logic;
+  SIGNAL in0, in1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL out0 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+  SIGNAL cout : STD_LOGIC;
 
-begin
-  SUB160: sub16 port map (in0, in1, out0, cout);
+BEGIN
+  SUB160 : sub16 PORT MAP(in0, in1, out0, cout);
 
-  process
-  begin
+  PROCESS
+  BEGIN
     in0 <= "0011011100110011";
     in1 <= "0101010101000001";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     in0 <= "1111111111111111";
     in1 <= "0000000000000000";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     in0 <= "1111111011011100";
     in1 <= "0000100011001110";
-    wait for 5 ns;
+    WAIT FOR 5 ns;
     in0 <= "0000100011001110";
     in1 <= "1111111011011100";
-    wait for 5 ns;
-  end process;
-end;
+    WAIT FOR 5 ns;
+  END PROCESS;
+END;

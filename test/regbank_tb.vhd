@@ -17,9 +17,9 @@ ARCHITECTURE testbench OF regbank_tb IS
         );
     END COMPONENT;
 
-    signal clk, rst, wr_en : std_logic;
-    signal wr_reg, rd_reg : std_logic_vector(2 downto 0);
-    signal wr_src, data_out : std_logic_vector(15 downto 0);
+    SIGNAL clk, rst, wr_en : STD_LOGIC;
+    SIGNAL wr_reg, rd_reg : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL wr_src, data_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 BEGIN
     REGBANK160 : regbank PORT MAP(clk, rst, wr_en, wr_src, wr_reg, rd_reg, data_out);
@@ -33,72 +33,72 @@ BEGIN
         rd_reg <= "000";
 
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         wr_src <= "1000100000001000";
         wr_reg <= "001";
         wr_en <= '1';
 
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         rd_reg <= "001";
-        
+
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         rst <= '1';
-        
+
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         rst <= '0';
         rd_reg <= "001";
-        
+
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         wr_src <= "1111111111111111";
         wr_reg <= "000";
         wr_en <= '1';
-        
+
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         rd_reg <= "000";
-        
+
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         wr_src <= "1111111111111111";
         wr_reg <= "100";
         wr_en <= '1';
-        
+
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
 
         rd_reg <= "100";
 
         clk <= '0';
-        wait for 5 ns;
+        WAIT FOR 5 ns;
         clk <= '1';
-        wait for 5 ns;
-        
+        WAIT FOR 5 ns;
+
     END PROCESS;
 END;
