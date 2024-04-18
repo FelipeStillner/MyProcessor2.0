@@ -1,4 +1,4 @@
-t = ula
+t = processor
 
 compile:
 	@mkdir -p waves
