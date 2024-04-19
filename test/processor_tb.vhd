@@ -30,9 +30,18 @@ BEGIN
 
     PROCESS
     BEGIN
+        -- Reseta o banco de registradores e o acumulador
         rst <= '1';
         WAIT FOR 5 ns;
         rst <= '0';
+
+        -- Escreve no reg1 o imediato e já le e coloca em uma entrada da ula
+        -- Realiza a operação OR na ULA entre o valor do reg1 e o valor no acumulador
+        -- imm = 1248, 
+        -- reg1 = imm = 1248, 
+        -- in0 = reg1 = 1248,
+        -- in1 = acu = 0000,
+        -- Ula_out = in0 or in1 = 1248
         wr_en_acc <= '0';
         sel <= "0001";
         imm <= "0001001001001000";
@@ -45,13 +54,23 @@ BEGIN
         WAIT FOR 5 ns;
         clk <= '1';
         WAIT FOR 5 ns;
+
+        -- Escreve no acumulador o resultado da ULA
+        -- acu = ula_out = 1248
         wr_en_acc <= '1';
         clk <= '0';
         WAIT FOR 5 ns;
         clk <= '1';
         WAIT FOR 5 ns;
-        wr_en_acc <= '0';
 
+        -- Escreve no reg2 o imediato e já le e coloca em uma entrada da ula
+        -- Realiza a operação OR na ULA entre o valor do reg2 e o valor no acumulador
+        -- imm = 8421, 
+        -- reg2 = imm = 8421, 
+        -- in0 = reg2 = 8421,
+        -- in1 = acu = 1248,
+        -- ula_out = in0 or in1 = 9669
+        wr_en_acc <= '0';
         sel <= "0001";
         imm <= "1000010000100001";
         sel_wr <= '0';
@@ -64,13 +83,21 @@ BEGIN
         WAIT FOR 5 ns;
         clk <= '1';
         WAIT FOR 5 ns;
+
+        -- Escreve no acumulador o resultado da ULA
+        -- acu = ula_out = 9669
         wr_en_acc <= '1';
         clk <= '0';
         WAIT FOR 5 ns;
         clk <= '1';
         WAIT FOR 5 ns;
-        wr_en_acc <= '0';
 
+        -- Le o valor do reg1 coloca em uma entrada da ula
+        -- Realiza a operação Soma na ULA entre o valor do reg1 e o valor no acumulador
+        -- in0 = reg1 = 1248,
+        -- in1 = acu = 9669,
+        -- ula_out = in0 + in1 = A8B1
+        wr_en_acc <= '0';
         sel <= "0011";
         imm <= "1000010000100001";
         sel_wr <= '1';
@@ -83,6 +110,13 @@ BEGIN
         WAIT FOR 5 ns;
         clk <= '1';
         WAIT FOR 5 ns;
+
+        -- Escreve no acumulador o resultado da ULA
+        -- Escreve no reg4 o resultado da ula
+        -- acu = ula_out = A8B1
+        -- reg4 = ula_out = A8B1
+        wr_reg <= "100";
+        wr_en_regbank <= '1';
         wr_en_acc <= '1';
         clk <= '0';
         WAIT FOR 5 ns;
