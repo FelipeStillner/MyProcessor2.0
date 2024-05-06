@@ -8,9 +8,7 @@ ENTITY uc IS
         rst : IN STD_LOGIC;
         state : OUT STD_LOGIC;
         addr : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
-        data : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
-        opcode : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
-        imm : STD_LOGIC_VECTOR(15 DOWNTO 0);
+        data : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END ENTITY;
 
@@ -36,7 +34,7 @@ ARCHITECTURE a_uc OF uc IS
         PORT (
             clk : IN STD_LOGIC;
             endereco : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
-            dado : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
+            dado : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
     END COMPONENT;
 
@@ -48,17 +46,22 @@ ARCHITECTURE a_uc OF uc IS
         );
     END COMPONENT;
 
-    SIGNAL trash, jump : STD_LOGIC;
+    SIGNAL trash, jump_en : STD_LOGIC;
     SIGNAL data_in, sum_out : STD_LOGIC_VECTOR(6 DOWNTO 0);
+    SIGNAL opcode : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL imm : STD_LOGIC_VECTOR(15 DOWNTO 0);
 BEGIN
     STM : fft PORT MAP(clk, rst, state);
     SUM : sum7 PORT MAP('0', addr, "0000001", sum_out, trash);
     PC : reg7 PORT MAP(not state, rst, '1', data_in, addr);
     ROM0 : rom PORT MAP(state, addr, data);
 
-    data_in <= imm(6 downto 0) when jump_en else
-                sum_out
+    imm <= data(31 downto 16);
+    opcode <= data(4 downto 0);
 
-    jump_en <=  '1' when opcode="1111111111" else
+    data_in <= imm(6 downto 0) when jump_en else
+                sum_out;
+
+    jump_en <=  '1' when opcode="11111" else
                '0';
 END ARCHITECTURE;
