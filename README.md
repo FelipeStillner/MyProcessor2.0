@@ -1,31 +1,34 @@
-# Instruction Format 
+# Instruction Format
 
 ### Sizes
 
-Instruction: 32 bits
+Instruction: 16 bits
 
-imm: 16 bits
+imm: 6 bits
 
-address registers: 3bits
+address registers: 3 bits
 
 registers: 16 bits
 
-func9: 9 bits
-
-func13: 13 bits
-
-func5: 5 bits
-
-opcode: 5 bits
+opcode: 2 bits
 
 ### Instructions Formats
 
-* Type I: opcode == 00000
-  imm + rs1 + rd + func5 + opcode: 32 bits
-* Type R: opcode == 01010
-  func13 + rs2 + rs1 + rd + func5 + opcode: 32 bits
-* Type J: opcode == 11111
-  imm + func6 + func5 + opcode: 32 bits
+* Type I: opcode == 00
+  imm + func5 + rd + opcode: 16 bits
+* Type R: opcode == 01
+  func8 + rs1 + rd  + opcode: 16 bits
+* Type J: opcode == 10
+  imm + func8 + opcode: 16 bits
+* Type L opcode == 11
+  imm +  func5 + rd + opcode: 16 bits
+
+### Instructions:
+
+* LD rd, const(8bits));
+* LDU rd, const(8bits))
+* LDA const(8bits));
+* LDAU const(8bits));
 
 ### Run testbenches:
 

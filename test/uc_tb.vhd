@@ -8,19 +8,14 @@ ARCHITECTURE testbench OF uc_tb IS
   COMPONENT uc IS
     PORT (
       clk : IN STD_LOGIC;
-      rst : IN STD_LOGIC;
-      state : OUT STD_LOGIC;
-      addr : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
-      data : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+      rst : IN STD_LOGIC
     );
   END COMPONENT;
 
-  SIGNAL clk, rst, state : STD_LOGIC;
-  SIGNAL addr : STD_LOGIC_VECTOR(6 DOWNTO 0);
-  SIGNAL data : STD_LOGIC_VECTOR(31 DOWNTO 0);
+  SIGNAL clk, rst: STD_LOGIC;
 
 BEGIN
-  UC0 : uc PORT MAP(clk, rst, state, addr, data);
+  UC0 : uc PORT MAP(clk, rst);
 
   PROCESS
   BEGIN
