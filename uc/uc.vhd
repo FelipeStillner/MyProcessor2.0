@@ -8,6 +8,7 @@ ENTITY uc IS
         rst : IN STD_LOGIC;
         ld : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         sel : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+        muxUla : 
     );
 END ENTITY;
 
@@ -49,11 +50,9 @@ ARCHITECTURE a_uc OF uc IS
     SIGNAL data : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL addr : STD_LOGIC_VECTOR(6 DOWNTO 0);
     SIGNAL state : STD_LOGIC_VECTOR(1 DOWNTO 0);
-    SIGNAL op : STD_LOGIC_VECTOR(1 DOWNTO 0);
-    SIGNAL imm : STD_LOGIC_VECTOR(5 DOWNTO 0);
-    SIGNAL rd, rs1, rs2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
-    SIGNAL func5I, func5L : STD_LOGIC_VECTOR(4 DOWNTO 0);
-    SIGNAL func8J, func8R : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL opc : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL imm : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL reg : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
 BEGIN
     STM : maq_estados PORT MAP(clk, rst, state);
@@ -61,16 +60,11 @@ BEGIN
     PC : reg7 PORT MAP(decode, rst, '1', data_in, addr);
     ROM0 : rom PORT MAP(fetch, addr, data);
 
-    op <= data(1 DOWNTO 0);
-    rd <= data(4 DOWNTO 2);
-    rs1 <= data(7 DOWNTO 5);
-    imm <= data(15 DOWNTO 10);
-    func5I <= data(9 DOWNTO 5);
-    func8R <= data(15 DOWNTO 8);
-    func8J <= data(9 DOWNTO 2);
-    func5L <= data(9 DOWNTO 5);
+    opc <= data(4 DOWNTO 0);
+    reg <= data(7 DOWNTO 5);
+    imm <= data(15 DOWNTO 8);
 
-    data_in <= "0" & imm when jump_en else
+    data_in <= imm(6 downto 0) when jump_en else
                 sum_out;
     jump_en <=  '1' when op="10" else
                '0';
@@ -82,21 +76,10 @@ BEGIN
     execute <= '1' when state = "10" else 
             '0';
 
-    -- LOAD
-    ld <= "00000000" & imm & func5L(4 downto 3) when op = "11" and func5L(1) = '0' else 
-            imm & func5L(4 downto 3) & "00000000"  when op = "11" and func5L(1) = '1' else 
-            "0000000000000000"
-
-
-    -- wr_en
-    wr_en_acc <= '1' when op = "11" and func5L(0) = '0' else 
-            '0';
-    wr_en_reg_bank <= '1' when op = "11" and func5L(0) = '1' else 
-            '0';
-
-    -- ULA
-    sel <= func5I(3 downto 0) when op = "00" else 
-            func8R(3 downto 0) when op = "01" else 
-            "1111"
+    
+    
+    -- ULA        
+    sel <= '0' & opc(4 downto 2) when opc(0) = '0' else 
+            "0000";
 
 END ARCHITECTURE;
