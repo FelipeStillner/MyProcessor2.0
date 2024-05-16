@@ -3,16 +3,7 @@ USE ieee.std_logic_1164.ALL;
 
 ENTITY processor0 IS
     PORT (
-        sel : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        imm : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        sel_wr : IN STD_LOGIC;
-        clk : IN STD_LOGIC;
-        rst : IN STD_LOGIC;
-        wr_en_regbank : IN STD_LOGIC;
-        wr_en_acc : IN STD_LOGIC;
-        wr_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        rd_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        ula_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        clk, rst : IN STD_LOGIC
     );
 END ENTITY;
 
@@ -59,11 +50,47 @@ ARCHITECTURE behaviour OF processor0 IS
         );
     END COMPONENT;
 
-    SIGNAL acu, regbank_in, regbank_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    COMPONENT uc IS
+        PORT (
+            clk : IN STD_LOGIC;
+            rst : IN STD_LOGIC;
+            execute : OUT STD_LOGIC;
+            imm : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            reg : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            sel : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+            muxUla, muxReg, muxAcc : OUT STD_LOGIC;
+            clkReg, clkAcc : OUT STD_LOGIC;
+            wrenReg, wrenAcc : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
+    SIGNAL sel : STD_LOGIC_VECTOR(3 DOWNTO 0);
+    SIGNAL s0, s1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL result : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL eq, gtr, cout_sum, cout_sub : STD_LOGIC;
+
+    SIGNAL wrenReg : STD_LOGIC;
+    SIGNAL srcReg : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL r : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL regData : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+    SIGNAL wrenAcc : STD_LOGIC;
+    SIGNAL srcAcc : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL accData : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+    SIGNAL execute : STD_LOGIC;
+    SIGNAL imm : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL reg : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL muxUla, muxReg, muxAcc : STD_LOGIC;
+    SIGNAL clkReg, clkAcc : STD_LOGIC;
+
 BEGIN
-    MUX0 : mux PORT MAP(sel_wr, imm, ula_out, regbank_in);
-    REG160 : reg16 PORT MAP(clk, rst, wr_en_acc, ula_out, acu);
-    REGBANK0 : regbank PORT MAP(clk, rst, wr_en_regbank, regbank_in, wr_reg, rd_reg, regbank_out);
-    ULA0 : ula PORT MAP(sel, regbank_out, acu, ula_out, eq, gtr, cout_sum, cout_sub);
+    ACC : reg16 PORT MAP(execute, rst, wrenAcc, srcAcc, accData);
+    REGBANK0 : regbank PORT MAP(execute, rst, wrenReg, srcReg, r, r, regData);
+    ULA0 : ula PORT MAP(sel, accData, s1, result, eq, gtr, cout_sum, cout_sub);
+    UC0 : uc PORT MAP(clk, rst, execute, imm, r, sel, muxUla, muxReg, muxAcc, clkReg, clkAcc, wrenReg, wrenAcc);
+
+    MUXULA0 : mux PORT MAP(muxUla, regData, imm, s1);
+    MUXACC0 : mux PORT MAP(muxAcc, result, regData, srcAcc);
+    MUXREG0 : mux PORT MAP(muxReg, accData, imm, srcReg);
 END;

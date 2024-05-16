@@ -6,9 +6,13 @@ ENTITY uc IS
     PORT (
         clk : IN STD_LOGIC;
         rst : IN STD_LOGIC;
-        ld : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        execute : OUT STD_LOGIC;
+        imm : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        reg : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         sel : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-        muxUla : 
+        muxUla, muxReg, muxAcc : OUT STD_LOGIC;
+        clkReg, clkAcc : OUT STD_LOGIC;
+        wrenReg, wrenAcc : OUT STD_LOGIC
     );
 END ENTITY;
 
@@ -45,14 +49,12 @@ ARCHITECTURE a_uc OF uc IS
         );
     END COMPONENT;
 
-    SIGNAL trash, jump_en, fetch, decode, execute : STD_LOGIC;
+    SIGNAL trash, jump_en, fetch, decode : STD_LOGIC;
     SIGNAL data_in, sum_out : STD_LOGIC_VECTOR(6 DOWNTO 0);
     SIGNAL data : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL addr : STD_LOGIC_VECTOR(6 DOWNTO 0);
     SIGNAL state : STD_LOGIC_VECTOR(1 DOWNTO 0);
     SIGNAL opc : STD_LOGIC_VECTOR(4 DOWNTO 0);
-    SIGNAL imm : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL reg : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
 BEGIN
     STM : maq_estados PORT MAP(clk, rst, state);
@@ -62,24 +64,39 @@ BEGIN
 
     opc <= data(4 DOWNTO 0);
     reg <= data(7 DOWNTO 5);
-    imm <= data(15 DOWNTO 8);
+    imm <= "00000000" & data(15 DOWNTO 8);
 
-    data_in <= imm(6 downto 0) when jump_en else
-                sum_out;
-    jump_en <=  '1' when op="10" else
-               '0';
-    
-    fetch <= '1' when state = "00" else 
-            '0';
-    decode <= '1' when state = "01" else 
-            '0';
-    execute <= '1' when state = "10" else 
-            '0';
-
-    
-    
+    data_in <= imm(6 DOWNTO 0) WHEN jump_en ELSE
+        sum_out;
+    jump_en <= '1' WHEN opc = "01110" ELSE
+        '0';
     -- ULA        
-    sel <= '0' & opc(4 downto 2) when opc(0) = '0' else 
-            "0000";
+    sel <= '0' & opc(4 DOWNTO 2) WHEN opc(0) = '1' ELSE
+        "0000";
 
+    -- MUX
+    muxUla <= '1' WHEN opc(1 DOWNTO 0) = "11" ELSE
+        '0';
+    muxAcc <= '1' WHEN opc = "11000" ELSE
+        '0';
+    muxReg <= '1' WHEN opc = "00100" ELSE
+        '0';
+
+    -- WREN
+    wrenReg <= '1' WHEN opc = "00100" OR opc = "11100" ELSE
+        '0';
+    wrenAcc <= '1';
+
+    -- clks
+    clkReg <= clk;
+    clkAcc <= clk;
+
+    -----------------------------------------------------------
+
+    fetch <= '1' WHEN state = "00" ELSE
+        '0';
+    decode <= '1' WHEN state = "01" ELSE
+        '0';
+    execute <= '1' WHEN state = "10" ELSE
+        '0';
 END ARCHITECTURE;
