@@ -1,4 +1,4 @@
-t = processor0
+t = processador
 
 compile:
 	@mkdir -p waves

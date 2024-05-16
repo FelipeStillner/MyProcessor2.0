@@ -12,7 +12,10 @@ ENTITY uc IS
         sel : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
         muxUla, muxReg, muxAcc : OUT STD_LOGIC;
         clkReg, clkAcc : OUT STD_LOGIC;
-        wrenReg, wrenAcc : OUT STD_LOGIC
+        wrenReg, wrenAcc : OUT STD_LOGIC;
+        state : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+        pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+        instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
 END ENTITY;
 
@@ -53,14 +56,16 @@ ARCHITECTURE a_uc OF uc IS
     SIGNAL data_in, sum_out : STD_LOGIC_VECTOR(6 DOWNTO 0);
     SIGNAL data : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL addr : STD_LOGIC_VECTOR(6 DOWNTO 0);
-    SIGNAL state : STD_LOGIC_VECTOR(1 DOWNTO 0);
     SIGNAL opc : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
 BEGIN
     STM : maq_estados PORT MAP(clk, rst, state);
     SUM : sum7 PORT MAP('0', addr, "0000001", sum_out, trash);
-    PC : reg7 PORT MAP(decode, rst, '1', data_in, addr);
+    PC0 : reg7 PORT MAP(decode, rst, '1', data_in, addr);
     ROM0 : rom PORT MAP(fetch, addr, data);
+
+    pc <= addr;
+    instruction <= data;
 
     opc <= data(4 DOWNTO 0);
     reg <= data(7 DOWNTO 5);

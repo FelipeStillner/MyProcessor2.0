@@ -1,0 +1,25 @@
+A: LD r3 5
+B: LD r4 8
+C: MOVTA r3    (precisa de 3 instruções)
+   ADD r4
+   MOVFA r5
+D: MOVTA r5    (precisa de 3 instruções)
+   SUB 1
+   MOVFA r5
+E: JMP 20
+F: MOVTA r0    (precisa de 2 instruções)
+   MOVFA r5
+   Nop
+   Nop
+   Nop
+   Nop
+   Nop
+   Nop
+   Nop
+   Nop 
+   Nop
+G: MOVTA r5    (precisa de 2 instruções)
+   MOVFA r3
+H: JMP 2
+I: MOVTA r0    (precisa de 2 instruções)
+   MOVFA r5

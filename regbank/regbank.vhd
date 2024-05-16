@@ -10,7 +10,8 @@ ENTITY regbank IS
         wr_src : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         wr_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         rd_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        reg3, reg4, reg5: OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
 END ENTITY;
 
@@ -65,5 +66,9 @@ BEGIN
         "01000000" WHEN wr_reg = "110" AND wr_en = '1' ELSE
         "10000000" WHEN wr_reg = "111" AND wr_en = '1' ELSE
         "00000000";
+
+    reg3 <= reg_out3;
+    reg4 <= reg_out4;
+    reg5 <= reg_out5;
 
 END ARCHITECTURE;
