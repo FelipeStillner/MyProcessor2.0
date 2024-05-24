@@ -22,7 +22,8 @@ ARCHITECTURE behaviour OF processor0 IS
             eq : OUT STD_LOGIC;
             gtr : OUT STD_LOGIC;
             cout_sum : OUT STD_LOGIC;
-            cout_sub : OUT STD_LOGIC
+            cout_sub : OUT STD_LOGIC;
+            cond : OUT STD_LOGIC
         );
     END COMPONENT;
 
@@ -70,13 +71,14 @@ ARCHITECTURE behaviour OF processor0 IS
             wrenReg, wrenAcc : OUT STD_LOGIC;
             state : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
             pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
-            instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+            instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            cond : OUT STD_LOGIC
         );
     END COMPONENT;
 
     SIGNAL sel : STD_LOGIC_VECTOR(3 DOWNTO 0);
     SIGNAL s0, s1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
-    SIGNAL eq, gtr, cout_sum, cout_sub : STD_LOGIC;
+    SIGNAL eq, gtr, cout_sum, cout_sub, cond : STD_LOGIC;
 
     SIGNAL wrenReg : STD_LOGIC;
     SIGNAL srcReg : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -93,10 +95,10 @@ ARCHITECTURE behaviour OF processor0 IS
     SIGNAL clkReg, clkAcc : STD_LOGIC;
 
 BEGIN
-    ACC : reg16 PORT MAP(execute, rst, wrenAcc, srcAcc, accData);
+    ACC : reg16 PORT MAP(clkAcc, rst, wrenAcc, srcAcc, accData);
     REGBANK0 : regbank PORT MAP(execute, rst, wrenReg, srcReg, r, r, regData, reg3, reg4, reg5);
-    ULA0 : ula PORT MAP(sel, accData, s1, ula_out, eq, gtr, cout_sum, cout_sub);
-    UC0 : uc PORT MAP(clk, rst, execute, imm, r, sel, muxUla, muxReg, muxAcc, clkReg, clkAcc, wrenReg, wrenAcc, state, pc, instruction);
+    ULA0 : ula PORT MAP(sel, accData, s1, ula_out, eq, gtr, cout_sum, cout_sub, cond);
+    UC0 : uc PORT MAP(clk, rst, execute, imm, r, sel, muxUla, muxReg, muxAcc, clkReg, clkAcc, wrenReg, wrenAcc, state, pc, instruction, cond);
 
     MUXULA0 : mux PORT MAP(muxUla, regData, imm, s1);
     MUXACC0 : mux PORT MAP(muxAcc, ula_out, regData, srcAcc);

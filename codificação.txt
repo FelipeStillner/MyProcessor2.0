@@ -5,16 +5,19 @@ MOVTA:  xxxxxxxx rrr 11000     (Move do registrador para o acumulador)
 LD   :  iiiiiiii rrr 00100     (Carrega o imediato no registrador)
 JMP  :  iiiiiiii xxx 01110     (Pula para o endereço no imediato)
 NOP  :  00000000 000 00000     (Nada)
-AND  :  xxxxxxxx rrr 00010     (AND entre registrador e acumulador)
+AND  :  xxxxxxxx rrr 00001     (AND entre registrador e acumulador)
 ANDI :  iiiiiiii xxx 00011     (AND entre imediato e acumulador)
-OR   :  xxxxxxxx rrr 00110     (OR entre registrador e acumulador)
+OR   :  xxxxxxxx rrr 00101     (OR entre registrador e acumulador)
 ORI  :  iiiiiiii xxx 00111     (OR entre imediato e acumulador)
-XOR  :  xxxxxxxx rrr 01010     (XOR entre registrador e acumulador)
+XOR  :  xxxxxxxx rrr 01001     (XOR entre registrador e acumulador)
 XORI :  iiiiiiii xxx 01011     (XOR entre imediato e acumulador)
-ADD  :  xxxxxxxx rrr 01110     (ADD entre registrador e acumulador)
+ADD  :  xxxxxxxx rrr 01101     (ADD entre registrador e acumulador)
 ADDI :  iiiiiiii xxx 01111     (ADD entre imediato e acumulador)
-SUB  :  xxxxxxxx rrr 10010     (SUB entre registrador e acumulador)
+SUB  :  xxxxxxxx rrr 10001     (SUB entre registrador e acumulador)
 SUBI :  iiiiiiii xxx 10011     (SUB entre imediato e acumulador)
+
+BNEQ :  iiiiiiii xxx 00010  
+BGTR :  iiiiiiii xxx 00110    
 
 onde
     rrr  identifica o registrador

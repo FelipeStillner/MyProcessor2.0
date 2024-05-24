@@ -9,7 +9,8 @@ ENTITY ula IS
         eq : OUT STD_LOGIC;
         gtr : OUT STD_LOGIC;
         cout_sum : OUT STD_LOGIC;
-        cout_sub : OUT STD_LOGIC
+        cout_sub : OUT STD_LOGIC;
+        cond : OUT STD_LOGIC
     );
 END ENTITY;
 
@@ -101,9 +102,15 @@ BEGIN
     LFT60 : leftshift16 PORT MAP(in0, in1, s_lft16);
 
     -- Select Operation output
-    MUX160 : mux16 PORT MAP(sel, s_and16, s_or16, s_xor16, s_sum16, s_sub16, s_lft16, nop, nop, nop, nop, nop, nop, nop, nop, nop, nop, out0);
+    MUX160 : mux16 PORT MAP(sel, s_and16, s_or16, s_xor16, s_sum16, s_sub16, s_lft16, in0, in0, in0, in0, in0, in0, in0, in0, in0, in0, out0);
 
     -- Flags for comparison
     EQ160 : eq16 PORT MAP(in0, in1, eq);
     GTR160 : gtr16 PORT MAP(in0, in1, gtr);
+
+    cond <= eq when sel = "1000" else
+            gtr when sel = "1001" else
+            (not eq) when sel = "1100" else
+            (not gtr) when sel = "1101" else
+            '0';
 END ARCHITECTURE;

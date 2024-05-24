@@ -15,7 +15,8 @@ ENTITY uc IS
         wrenReg, wrenAcc : OUT STD_LOGIC;
         state : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
         pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
-        instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        cond : OUT STD_LOGIC
     );
 END ENTITY;
 
@@ -55,12 +56,12 @@ ARCHITECTURE a_uc OF uc IS
     SIGNAL trash, jump_en, fetch, decode : STD_LOGIC;
     SIGNAL data_in, sum_out : STD_LOGIC_VECTOR(6 DOWNTO 0);
     SIGNAL data : STD_LOGIC_VECTOR(15 DOWNTO 0);
-    SIGNAL addr : STD_LOGIC_VECTOR(6 DOWNTO 0);
+    SIGNAL addr, next_addr : STD_LOGIC_VECTOR(6 DOWNTO 0);
     SIGNAL opc : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
 BEGIN
     STM : maq_estados PORT MAP(clk, rst, state);
-    SUM : sum7 PORT MAP('0', addr, "0000001", sum_out, trash);
+    SUM : sum7 PORT MAP('0', addr, next_addr, sum_out, trash);
     PC0 : reg7 PORT MAP(decode, rst, '1', data_in, addr);
     ROM0 : rom PORT MAP(fetch, addr, data);
 
@@ -76,8 +77,8 @@ BEGIN
     jump_en <= '1' WHEN opc = "01110" ELSE
         '0';
     -- ULA        
-    sel <= '0' & opc(4 DOWNTO 2) WHEN opc(0) = '1' ELSE
-        "0000";
+    sel <= (not opc(0)) & opc(4 DOWNTO 2) WHEN opc(0) = '1' OR opc(1 downto 0) = "10" ELSE
+        "1111";
 
     -- MUX
     muxUla <= '1' WHEN opc(1 DOWNTO 0) = "11" ELSE
@@ -94,14 +95,18 @@ BEGIN
 
     -- clks
     clkReg <= clk;
-    clkAcc <= clk;
+    clkAcc <= execute;
+
+    -- Branch relativo
+    next_addr <= imm(6 downto 0) WHEN (opc(1 downto 0) = "10" AND cond = '1') ELSE
+        "0000001";
 
     -----------------------------------------------------------
 
     fetch <= '1' WHEN state = "00" ELSE
         '0';
-    decode <= '1' WHEN state = "01" ELSE
+    decode <= '1' WHEN state = "10" ELSE
         '0';
-    execute <= '1' WHEN state = "10" ELSE
+    execute <= '1' WHEN state = "01" ELSE
         '0';
 END ARCHITECTURE;
