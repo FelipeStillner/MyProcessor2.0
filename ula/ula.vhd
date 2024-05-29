@@ -5,16 +5,24 @@ ENTITY ula IS
     PORT (
         sel : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
         in0, in1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        clk : IN STD_LOGIC;
         out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        eq : OUT STD_LOGIC;
-        gtr : OUT STD_LOGIC;
-        cout_sum : OUT STD_LOGIC;
-        cout_sub : OUT STD_LOGIC;
+        carry, neg, over : OUT STD_LOGIC;
         cond : OUT STD_LOGIC
     );
 END ENTITY;
 
 ARCHITECTURE behaviour OF ula IS
+
+    COMPONENT reg1 IS
+        PORT (
+            clk : IN STD_LOGIC;
+            rst : IN STD_LOGIC;
+            wr_en : IN STD_LOGIC;
+            data_in : IN STD_LOGIC;
+            data_out : OUT STD_LOGIC
+        );
+    END COMPONENT;
 
     COMPONENT and16
         PORT (
@@ -88,6 +96,7 @@ ARCHITECTURE behaviour OF ula IS
 
     SIGNAL s_and16, s_or16, s_xor16, s_sum16, s_sub16, s_lft16 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL nop : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL cout_sub, cout_sum, cout, eq, gtr : STD_LOGIC;
 
 BEGIN
     -- Nothing Important
@@ -104,13 +113,18 @@ BEGIN
     -- Select Operation output
     MUX160 : mux16 PORT MAP(sel, s_and16, s_or16, s_xor16, s_sum16, s_sub16, s_lft16, in0, in0, in0, in0, in0, in0, in0, in0, in0, in0, out0);
 
-    -- Flags for comparison
+    -- Flags 
     EQ160 : eq16 PORT MAP(in0, in1, eq);
     GTR160 : gtr16 PORT MAP(in0, in1, gtr);
+    CAR0 : reg1 PORT MAP(clk, '0', '1', cout, carry);
+    NEG0 : reg1 PORT MAP(clk, '0', '1', out0(15), neg);
+    OVER0 : reg1 PORT MAP(clk, '0', '1', '0', over);
 
-    cond <= eq when sel = "1000" else
-            gtr when sel = "1001" else
-            (not eq) when sel = "1100" else
-            (not gtr) when sel = "1101" else
+    cond <= not eq WHEN sel = "1000" ELSE
+        gtr WHEN sel = "1001" ELSE
+        '0';
+
+    cout <= cout_sum WHEN sel = "0011" else
+        cout_sub WHEN sel = "0100" else
             '0';
 END ARCHITECTURE;

@@ -18,6 +18,9 @@ SUBI :  iiiiiiii xxx 10011     (SUB entre imediato e acumulador)
 
 BNEQ :  iiiiiiii xxx 00010  
 BGTR :  iiiiiiii xxx 00110    
+JC   :  iiiiiiii xxx 10010
+JN   :  iiiiiiii xxx 10110
+JO   :  iiiiiiii xxx 11010    
 
 onde
     rrr  identifica o registrador

@@ -11,12 +11,13 @@ ENTITY uc IS
         reg : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         sel : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
         muxUla, muxReg, muxAcc : OUT STD_LOGIC;
-        clkReg, clkAcc : OUT STD_LOGIC;
+        clkReg, clkAcc, clkUla : OUT STD_LOGIC;
         wrenReg, wrenAcc : OUT STD_LOGIC;
         state : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
         pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
         instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        cond : OUT STD_LOGIC
+        cond : IN STD_LOGIC;
+        carry, neg, over : IN STD_LOGIC
     );
 END ENTITY;
 
@@ -77,7 +78,7 @@ BEGIN
     jump_en <= '1' WHEN opc = "01110" ELSE
         '0';
     -- ULA        
-    sel <= (not opc(0)) & opc(4 DOWNTO 2) WHEN opc(0) = '1' OR opc(1 downto 0) = "10" ELSE
+    sel <= (NOT opc(0)) & opc(4 DOWNTO 2) WHEN opc(0) = '1' OR opc(1 DOWNTO 0) = "10" ELSE
         "1111";
 
     -- MUX
@@ -96,9 +97,14 @@ BEGIN
     -- clks
     clkReg <= clk;
     clkAcc <= execute;
+    clkUla <= '1' WHEN (execute = '1') AND (opc(0) = '1') ELSE
+        '0';
 
     -- Branch relativo
-    next_addr <= imm(6 downto 0) WHEN (opc(1 downto 0) = "10" AND cond = '1') ELSE
+    next_addr <= imm(6 DOWNTO 0) WHEN (opc(1 DOWNTO 0) = "10" AND cond = '1') ELSE
+        imm(6 DOWNTO 0) WHEN (opc = "10010" AND carry = '1') ELSE
+        imm(6 DOWNTO 0) WHEN (opc = "10110" AND neg = '1') ELSE
+        imm(6 DOWNTO 0) WHEN (opc = "11010" AND over = '1') ELSE
         "0000001";
 
     -----------------------------------------------------------

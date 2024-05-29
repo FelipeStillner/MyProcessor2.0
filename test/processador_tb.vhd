@@ -35,7 +35,7 @@ BEGIN
         rst <= '0';
         WAIT FOR 1 ns;
 
-        l1 : for k in 0 to 850 loop
+        l1 : for k in 0 to 1000 loop
             clk <= '0';
             WAIT FOR 1 ns;
             clk <= '1';
