@@ -15,12 +15,11 @@ ADD  :  xxxxxxxx rrr 01101     (ADD entre registrador e acumulador)
 ADDI :  iiiiiiii xxx 01111     (ADD entre imediato e acumulador)
 SUB  :  xxxxxxxx rrr 10001     (SUB entre registrador e acumulador)
 SUBI :  iiiiiiii xxx 10011     (SUB entre imediato e acumulador)
-
-BNEQ :  iiiiiiii xxx 00010  
-BGTR :  iiiiiiii xxx 00110    
-JC   :  iiiiiiii xxx 10010
-JN   :  iiiiiiii xxx 10110
-JO   :  iiiiiiii xxx 11010    
+BNEQ :  iiiiiiii rrr 00010     (Salta se o valor no registrador é diferente do acumulador)
+BGTR :  iiiiiiii rrr 00110     (Salta se o valor no registrador maior que o acumulador)
+JC   :  iiiiiiii xxx 10010     (Salta se a falg de carry está acionada)
+JN   :  iiiiiiii xxx 10110     (Salta se a falg de negativo está acionada)
+JO   :  iiiiiiii xxx 11010     (Salta se a falg de overflow está acionada)
 
 onde
     rrr  identifica o registrador

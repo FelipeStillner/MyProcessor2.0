@@ -119,7 +119,7 @@ BEGIN
     GTR160 : gtr16 PORT MAP(in0, in1, gtr);
     CAR0 : reg1 PORT MAP(clk, '0', '1', cout, carry);
     NEG0 : reg1 PORT MAP(clk, '0', '1', out0(15), neg);
-    OVER0 : reg1 PORT MAP(clk, '0', '1', '0', over);
+    OVER0 : reg1 PORT MAP(clk, '0', '1', cout, over);
 
     cond <= NOT eq WHEN sel = "1000" ELSE
         gtr WHEN sel = "1001" ELSE
