@@ -1,5 +1,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
 
 ENTITY ula IS
     PORT (
@@ -96,7 +97,7 @@ ARCHITECTURE behaviour OF ula IS
 
     SIGNAL s_and16, s_or16, s_xor16, s_sum16, s_sub16, s_lft16 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL nop : STD_LOGIC_VECTOR(15 DOWNTO 0);
-    SIGNAL cout_sub, cout_sum, cout, eq, gtr : STD_LOGIC;
+    SIGNAL cout_sub, a, cout_sum, cout, eq, gtr : STD_LOGIC;
 
 BEGIN
     -- Nothing Important
@@ -107,7 +108,7 @@ BEGIN
     OR160 : or16 PORT MAP(in0, in1, s_or16);
     XOR160 : xor16 PORT MAP(in0, in1, s_xor16);
     SUM160 : sum16 PORT MAP('0', in0, in1, s_sum16, cout_sum);
-    SUB60 : sub16 PORT MAP(in0, in1, s_sub16, cout_sub);
+    SUB60 : sub16 PORT MAP(in0, in1, s_sub16, a);
     LFT60 : leftshift16 PORT MAP(in0, in1, s_lft16);
 
     -- Select Operation output
@@ -120,11 +121,13 @@ BEGIN
     NEG0 : reg1 PORT MAP(clk, '0', '1', out0(15), neg);
     OVER0 : reg1 PORT MAP(clk, '0', '1', '0', over);
 
-    cond <= not eq WHEN sel = "1000" ELSE
+    cond <= NOT eq WHEN sel = "1000" ELSE
         gtr WHEN sel = "1001" ELSE
         '0';
 
-    cout <= cout_sum WHEN sel = "0011" else
-        cout_sub WHEN sel = "0100" else
-            '0';
+    cout <= cout_sum WHEN sel = "0011" ELSE
+        cout_sub WHEN sel = "0100" ELSE
+        '0';
+    cout_sub <= '0' WHEN (Unsigned(in0) <= Unsigned(in1)) ELSE
+        '1';
 END ARCHITECTURE;
