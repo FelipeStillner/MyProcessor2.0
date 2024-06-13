@@ -21,6 +21,10 @@ JC   :  iiiiiiii xxx 10010     (Salta se a falg de carry está acionada)
 JN   :  iiiiiiii xxx 10110     (Salta se a falg de negativo está acionada)
 JO   :  iiiiiiii xxx 11010     (Salta se a falg de overflow está acionada)
 
+--------------------LAB07------------------------------
+lw   :  iiiiiiii rrr 10100     (carrega valor da memoria no registrador) 
+sw   :  iiiiiiii rrr 10000     (carrega valor do registrador na memoria) 
+
 onde
     rrr  identifica o registrador
     iiiiiiii identifica a constante de 8 bits

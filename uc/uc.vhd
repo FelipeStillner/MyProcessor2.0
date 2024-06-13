@@ -17,7 +17,8 @@ ENTITY uc IS
         pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
         instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         cond : IN STD_LOGIC;
-        carry, neg, over : IN STD_LOGIC
+        carry, neg, over : IN STD_LOGIC;
+        wrenRam, muxReg2 : OUT STD_LOGIC
     );
 END ENTITY;
 
@@ -79,20 +80,25 @@ BEGIN
         '0';
     -- ULA        
     sel <= (NOT opc(0)) & opc(4 DOWNTO 2) WHEN opc(0) = '1' OR opc(1 DOWNTO 0) = "10" ELSE
+            "0011" WHEN opc = "10100" or opc = "10000" ELSE
         "1111";
 
     -- MUX
-    muxUla <= '1' WHEN opc(1 DOWNTO 0) = "11" ELSE
+    muxUla <= '1' WHEN opc(1 DOWNTO 0) = "11" or opc = "10000" or opc = "10100"  ELSE
         '0';
     muxAcc <= '1' WHEN opc = "11000" ELSE
         '0';
     muxReg <= '1' WHEN opc = "00100" ELSE
         '0';
+    muxReg2 <= '1' WHEN opc = "10100" ELSE
+        '0';
 
     -- WREN
-    wrenReg <= '1' WHEN opc = "00100" OR opc = "11100" ELSE
+    wrenReg <= '1' WHEN opc = "00100" OR opc = "11100" or opc = "10100" ELSE
         '0';
     wrenAcc <= '1';
+    wrenRam <= '1' WHEN opc = "10000" ELSE
+        '0';
 
     -- clks
     clkReg <= clk;
