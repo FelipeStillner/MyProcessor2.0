@@ -17,8 +17,9 @@ ENTITY uc IS
         pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
         instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         cond : IN STD_LOGIC;
-        carry, neg, over : IN STD_LOGIC;
-        wrenRam, muxReg2 : OUT STD_LOGIC
+        carry, neg, over, zero, one : IN STD_LOGIC;
+        wrenRam, muxReg2 : OUT STD_LOGIC;
+        djnz : OUT STD_LOGIC
     );
 END ENTITY;
 
@@ -72,7 +73,8 @@ BEGIN
 
     opc <= data(4 DOWNTO 0);
     reg <= data(7 DOWNTO 5);
-    imm <= "00000000" & data(15 DOWNTO 8);
+    imm <= data(15 DOWNTO 8) & "00000000" WHEN opc = "01100" ELSE
+        "00000000" & data(15 DOWNTO 8);
 
     data_in <= imm(6 DOWNTO 0) WHEN jump_en ELSE
         sum_out;
@@ -80,21 +82,21 @@ BEGIN
         '0';
     -- ULA        
     sel <= (NOT opc(0)) & opc(4 DOWNTO 2) WHEN opc(0) = '1' OR opc(1 DOWNTO 0) = "10" ELSE
-            "0011" WHEN opc = "10100" or opc = "10000" ELSE
+        "0011" WHEN opc = "10100" OR opc = "10000" ELSE
         "1111";
 
     -- MUX
-    muxUla <= '1' WHEN opc(1 DOWNTO 0) = "11" or opc = "10000" or opc = "10100"  ELSE
+    muxUla <= '1' WHEN opc(1 DOWNTO 0) = "11" OR opc = "10000" OR opc = "10100" ELSE
         '0';
     muxAcc <= '1' WHEN opc = "11000" ELSE
         '0';
-    muxReg <= '1' WHEN opc = "00100" ELSE
+    muxReg <= '1' WHEN opc = "00100" OR opc = "01100" ELSE
         '0';
     muxReg2 <= '1' WHEN opc = "10100" ELSE
         '0';
 
     -- WREN
-    wrenReg <= '1' WHEN opc = "00100" OR opc = "11100" or opc = "10100" ELSE
+    wrenReg <= '1' WHEN opc = "00100" OR opc = "01100" OR opc = "11100" OR opc = "10100" OR opc = "11110" ELSE
         '0';
     wrenAcc <= '1';
     wrenRam <= '1' WHEN opc = "10000" ELSE
@@ -103,7 +105,7 @@ BEGIN
     -- clks
     clkReg <= clk;
     clkAcc <= execute;
-    clkUla <= '1' WHEN (execute = '1') AND (opc(0) = '1') ELSE
+    clkUla <= '1' WHEN (execute = '1') AND ((opc(0) = '1') OR opc = "11110") ELSE
         '0';
 
     -- Branch relativo
@@ -111,6 +113,7 @@ BEGIN
         imm(6 DOWNTO 0) WHEN (opc = "10010" AND carry = '1') ELSE
         imm(6 DOWNTO 0) WHEN (opc = "10110" AND neg = '1') ELSE
         imm(6 DOWNTO 0) WHEN (opc = "11010" AND over = '1') ELSE
+        imm(6 DOWNTO 0) WHEN (opc = "11110" AND one = '0') ELSE
         "0000001";
 
     -----------------------------------------------------------
@@ -120,5 +123,8 @@ BEGIN
     decode <= '1' WHEN state = "10" ELSE
         '0';
     execute <= '1' WHEN state = "01" ELSE
+        '0';
+
+    djnz <= '1' WHEN opc = "11110" ELSE
         '0';
 END ARCHITECTURE;

@@ -20,7 +20,7 @@ ARCHITECTURE behaviour OF processor0 IS
             in0, in1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             clk : IN STD_LOGIC;
             out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            carry, neg, over : OUT STD_LOGIC;
+            carry, neg, over, zero, one : OUT STD_LOGIC;
             cond : OUT STD_LOGIC
         );
     END COMPONENT;
@@ -34,7 +34,8 @@ ARCHITECTURE behaviour OF processor0 IS
             wr_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
             rd_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
             data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            reg3, reg4, reg5 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+            reg3, reg4, reg5 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            djnz : IN STD_LOGIC
         );
     END COMPONENT;
 
@@ -71,8 +72,9 @@ ARCHITECTURE behaviour OF processor0 IS
             pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
             instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             cond : IN STD_LOGIC;
-            carry, neg, over : IN STD_LOGIC;
-            wrenRam, muxReg2 : OUT STD_LOGIC
+            carry, neg, over, zero, one : IN STD_LOGIC;
+            wrenRam, muxReg2 : OUT STD_LOGIC;
+            djnz : OUT STD_LOGIC
         );
     END COMPONENT;
 
@@ -104,16 +106,16 @@ ARCHITECTURE behaviour OF processor0 IS
     SIGNAL muxUla, muxReg, muxAcc : STD_LOGIC;
     SIGNAL clkReg, clkAcc, clkUla : STD_LOGIC;
 
-    SIGNAL wrenRam, muxReg2 : STD_LOGIC;
+    SIGNAL wrenRam, muxReg2, djnz, zero, one : STD_LOGIC;
 
     SIGNAL ramData, mux2data : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 BEGIN
     ACC : reg16 PORT MAP(clkAcc, rst, wrenAcc, srcAcc, accData);
-    REGBANK0 : regbank PORT MAP(execute, rst, wrenReg, srcReg, r, r, regData, reg3, reg4, reg5);
-    ULA0 : ula PORT MAP(sel, accData, s1, clkUla, ula_out, carry, neg, over, cond);
-    UC0 : uc PORT MAP(clk, rst, execute, imm, r, sel, muxUla, muxReg, muxAcc, clkReg, clkAcc, clkUla, wrenReg, wrenAcc, state, pc, instruction, cond, carry, neg, over, wrenRam, muxReg2);
-    RAM0: ram PORT MAP(clk, ula_out(6 downto 0), wrenRam, regData, ramData);
+    REGBANK0 : regbank PORT MAP(execute, rst, wrenReg, srcReg, r, r, regData, reg3, reg4, reg5, djnz);
+    ULA0 : ula PORT MAP(sel, accData, s1, clkUla, ula_out, carry, neg, over, zero, one, cond);
+    UC0 : uc PORT MAP(clk, rst, execute, imm, r, sel, muxUla, muxReg, muxAcc, clkReg, clkAcc, clkUla, wrenReg, wrenAcc, state, pc, instruction, cond, carry, neg, over, zero, one, wrenRam, muxReg2, djnz);
+    RAM0 : ram PORT MAP(clk, ula_out(6 DOWNTO 0), wrenRam, regData, ramData);
 
     MUXULA0 : mux PORT MAP(muxUla, regData, imm, s1);
     MUXACC0 : mux PORT MAP(muxAcc, ula_out, regData, srcAcc);

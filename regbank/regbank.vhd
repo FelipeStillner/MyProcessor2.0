@@ -11,7 +11,8 @@ ENTITY regbank IS
         wr_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         rd_reg : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        reg3, reg4, reg5: OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        reg3, reg4, reg5 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        djnz : IN STD_LOGIC
     );
 END ENTITY;
 
@@ -27,6 +28,15 @@ ARCHITECTURE behaviour OF regbank IS
         );
     END COMPONENT;
 
+    COMPONENT sum16 IS
+        PORT (
+            cin : IN STD_LOGIC;
+            in0, in1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            cout : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
     SIGNAL wr_en_vec : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL reg_out0 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL reg_out1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -36,16 +46,19 @@ ARCHITECTURE behaviour OF regbank IS
     SIGNAL reg_out5 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL reg_out6 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL reg_out7 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL wr_src2 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL sub : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL tmp : STD_LOGIC;
 
 BEGIN
-    REG160 : reg16 PORT MAP(clk, '1', wr_en_vec(0), wr_src, reg_out0);
-    REG161 : reg16 PORT MAP(clk, rst, wr_en_vec(1), wr_src, reg_out1);
-    REG162 : reg16 PORT MAP(clk, rst, wr_en_vec(2), wr_src, reg_out2);
-    REG163 : reg16 PORT MAP(clk, rst, wr_en_vec(3), wr_src, reg_out3);
-    REG164 : reg16 PORT MAP(clk, rst, wr_en_vec(4), wr_src, reg_out4);
-    REG165 : reg16 PORT MAP(clk, rst, wr_en_vec(5), wr_src, reg_out5);
-    REG166 : reg16 PORT MAP(clk, rst, wr_en_vec(6), wr_src, reg_out6);
-    REG167 : reg16 PORT MAP(clk, rst, wr_en_vec(7), wr_src, reg_out7);
+    REG160 : reg16 PORT MAP(clk, '1', wr_en_vec(0), wr_src2, reg_out0);
+    REG161 : reg16 PORT MAP(clk, rst, wr_en_vec(1), wr_src2, reg_out1);
+    REG162 : reg16 PORT MAP(clk, rst, wr_en_vec(2), wr_src2, reg_out2);
+    REG163 : reg16 PORT MAP(clk, rst, wr_en_vec(3), wr_src2, reg_out3);
+    REG164 : reg16 PORT MAP(clk, rst, wr_en_vec(4), wr_src2, reg_out4);
+    REG165 : reg16 PORT MAP(clk, rst, wr_en_vec(5), wr_src2, reg_out5);
+    REG166 : reg16 PORT MAP(clk, rst, wr_en_vec(6), wr_src2, reg_out6);
+    REG167 : reg16 PORT MAP(clk, rst, wr_en_vec(7), wr_src2, reg_out7);
 
     data_out <= reg_out0 WHEN rd_reg = "000" ELSE
         reg_out1 WHEN rd_reg = "001" ELSE
@@ -70,5 +83,10 @@ BEGIN
     reg3 <= reg_out3;
     reg4 <= reg_out4;
     reg5 <= reg_out5;
+
+    SUM160 : sum16 PORT MAP('0', "1111111111111111", data_out, sub, tmp);
+
+    wr_src2 <= sub WHEN djnz = '1' ELSE
+    wr_src;
 
 END ARCHITECTURE;

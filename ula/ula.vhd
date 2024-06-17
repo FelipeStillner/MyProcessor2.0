@@ -8,7 +8,7 @@ ENTITY ula IS
         in0, in1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         clk : IN STD_LOGIC;
         out0 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        carry, neg, over : OUT STD_LOGIC;
+        carry, neg, over, zero, one : OUT STD_LOGIC;
         cond : OUT STD_LOGIC
     );
 END ENTITY;
@@ -97,7 +97,7 @@ ARCHITECTURE behaviour OF ula IS
 
     SIGNAL s_and16, s_or16, s_xor16, s_sum16, s_sub16, s_lft16 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL nop : STD_LOGIC_VECTOR(15 DOWNTO 0);
-    SIGNAL cout_sub, a, cout_sum, cout, eq, gtr : STD_LOGIC;
+    SIGNAL cout_sub, a, cout_sum, cout, eq, gtr, zer, um : STD_LOGIC;
 
 BEGIN
     -- Nothing Important
@@ -120,6 +120,8 @@ BEGIN
     CAR0 : reg1 PORT MAP(clk, '0', '1', cout, carry);
     NEG0 : reg1 PORT MAP(clk, '0', '1', out0(15), neg);
     OVER0 : reg1 PORT MAP(clk, '0', '1', cout, over);
+    ZERO0 : reg1 PORT MAP(clk, '0', '1', zer, zero);
+    ONE0 : reg1 PORT MAP(clk, '0', '1', um, one);
 
     cond <= NOT eq WHEN sel = "1000" ELSE
         gtr WHEN sel = "1001" ELSE
@@ -130,4 +132,9 @@ BEGIN
         '0';
     cout_sub <= '0' WHEN (Unsigned(in0) <= Unsigned(in1)) ELSE
         '1';
+
+    zer <= '1' WHEN in1 = "0000000000000000" ELSE
+        '0';
+    um <= '1' WHEN in1 = "0000000000000001" ELSE
+        '0';
 END ARCHITECTURE;
