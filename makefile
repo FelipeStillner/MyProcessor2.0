@@ -10,7 +10,7 @@ compile:
 
 	ghdl -a -fsynopsys --std=08 test/$(t)_tb.vhd 
 	ghdl -e -fsynopsys --std=08 $(t)_tb
-	ghdl -r -fsynopsys --std=08 $(t)_tb --wave=waves/$(t)_tb.ghw --stop-time=5us
+	ghdl -r -fsynopsys --std=08 $(t)_tb --wave=waves/$(t)_tb.ghw --stop-time=10us
 
 	rm *.cf
 	
