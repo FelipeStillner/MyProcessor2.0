@@ -14,7 +14,7 @@ ARCHITECTURE a_rom OF rom IS
     TYPE mem IS ARRAY (-64 TO 127) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
     CONSTANT conteudo_rom : mem := (
         -- caso endereco => conteudo
-        0 => "0010000001000100",
+        0 => "0100000001000100",
         1 => "0000000100100100",
         2 => "0000000000111000",
         3 => "0000000000110000",
