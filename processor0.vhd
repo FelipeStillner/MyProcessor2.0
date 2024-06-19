@@ -7,7 +7,7 @@ ENTITY processor0 IS
         state : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
         pc : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
         instruction : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        reg3, reg4, reg5 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        reg3, div, reg5 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         accData : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         ula_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
@@ -81,7 +81,7 @@ ARCHITECTURE behaviour OF processor0 IS
     COMPONENT ram IS
         PORT (
             clk : IN STD_LOGIC;
-            endereco : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
+            endereco : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
             wr_en : IN STD_LOGIC;
             dado_in : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             dado_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
@@ -112,10 +112,10 @@ ARCHITECTURE behaviour OF processor0 IS
 
 BEGIN
     ACC : reg16 PORT MAP(clkAcc, rst, wrenAcc, srcAcc, accData);
-    REGBANK0 : regbank PORT MAP(execute, rst, wrenReg, srcReg, r, r, regData, reg3, reg4, reg5, djnz);
+    REGBANK0 : regbank PORT MAP(execute, rst, wrenReg, srcReg, r, r, regData, reg3, div, reg5, djnz);
     ULA0 : ula PORT MAP(sel, accData, s1, clkUla, ula_out, carry, neg, over, zero, one, cond);
     UC0 : uc PORT MAP(clk, rst, execute, imm, r, sel, muxUla, muxReg, muxAcc, clkReg, clkAcc, clkUla, wrenReg, wrenAcc, state, pc, instruction, cond, carry, neg, over, zero, one, wrenRam, muxReg2, djnz);
-    RAM0 : ram PORT MAP(clk, ula_out(6 DOWNTO 0), wrenRam, regData, ramData);
+    RAM0 : ram PORT MAP(clk, ula_out(7 DOWNTO 0), wrenRam, regData, ramData);
 
     MUXULA0 : mux PORT MAP(muxUla, regData, imm, s1);
     MUXACC0 : mux PORT MAP(muxAcc, ula_out, regData, srcAcc);
