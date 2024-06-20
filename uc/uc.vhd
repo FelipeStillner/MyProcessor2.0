@@ -114,6 +114,7 @@ BEGIN
         imm(6 DOWNTO 0) WHEN (opc = "10110" AND neg = '1') ELSE
         imm(6 DOWNTO 0) WHEN (opc = "11010" AND over = '1') ELSE
         imm(6 DOWNTO 0) WHEN (opc = "11110" AND one = '0') ELSE
+        imm(6 DOWNTO 0) WHEN (opc = "00010" AND zero = '1') ELSE
         "0000001";
 
     -----------------------------------------------------------

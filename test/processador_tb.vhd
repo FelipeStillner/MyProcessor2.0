@@ -35,12 +35,12 @@ BEGIN
         rst <= '0';
         WAIT FOR 1 ns;
 
-        l1 : for k in 0 to 50000000 loop
+        l1 : FOR k IN 0 TO 50000000 LOOP
             clk <= '0';
             WAIT FOR 1 ns;
             clk <= '1';
             WAIT FOR 1 ns;
-        end loop l1;
+        END LOOP l1;
 
     END PROCESS;
 END;
